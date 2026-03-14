@@ -36,8 +36,13 @@ export default function App() {
   const [interviewType, setInterviewType] = useState<InterviewType>('general');
   const [error, setError] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('groq_api_key') || '');
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('groq_api_key', apiKey);
+  }, [apiKey]);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -103,8 +108,12 @@ export default function App() {
   };
 
   const handleQuestionDetected = async (question: string) => {
+    if (!apiKey) {
+      setError('Please enter your Groq API key to start.');
+      return;
+    }
     setIsLoading(true);
-    const answer = await generateInterviewAnswer(question, interviewType);
+    const answer = await generateInterviewAnswer(question, interviewType, apiKey);
     setAiAnswer(answer);
     setIsLoading(false);
   };
@@ -130,6 +139,17 @@ export default function App() {
             <p className="text-sm uppercase tracking-widest opacity-50">Real-time Interview Assistant</p>
           </div>
           
+          <div className="w-full max-w-md mb-4">
+            <input
+              type="password"
+              placeholder="Enter Groq API Key"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="w-full px-4 py-2 rounded-xl border border-[#141414]/20 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#141414]"
+            />
+            <p className="text-[10px] mt-1 opacity-50">Key is stored only in your browser (localStorage).</p>
+          </div>
+
           <div className="flex flex-wrap gap-2">
             {(['general', 'technical', 'hr', 'behavioral'] as InterviewType[]).map((type) => (
               <button
