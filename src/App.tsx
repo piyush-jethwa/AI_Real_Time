@@ -34,8 +34,8 @@ export default function App() {
   const [aiAnswer, setAiAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [interviewType, setInterviewType] = useState<InterviewType>('general');
-
-
+  const [error, setError] = useState<string | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
