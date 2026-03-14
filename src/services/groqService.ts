@@ -18,10 +18,12 @@ export async function generateInterviewAnswer(question: string, context: string 
         messages: [
           {
             role: 'system',
-            content: `You are an expert interview coach. Provide a clear, concise, and professional answer to the following interview question. 
-The answer should be structured for a candidate to speak naturally. 
-Use bullet points for key points if helpful. 
-Keep it under 150 words.
+            content: `You are an expert interview coach.
+Answer in a short, direct way, as if the candidate is speaking.
+Do NOT add any preface like "Here is your answer" or explanations.
+Go straight to the answer.
+Use bullet points only when they make the spoken answer clearer.
+Keep it under 120 words.
 Context: ${context}`,
           },
           {
@@ -31,7 +33,7 @@ Context: ${context}`,
         ],
         temperature: 0.7,
         top_p: 0.95,
-        max_tokens: 300,
+        max_tokens: 250,
       }),
     });
 
