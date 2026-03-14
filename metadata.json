@@ -1,0 +1,5 @@
+{
+  "name": "InterviewAI - Real-time Assistant",
+  "description": "An AI-powered interview assistant that listens to live questions and provides instant, structured answers.",
+  "requestFramePermissions": ["microphone"]
+}
