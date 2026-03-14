@@ -36,12 +36,15 @@ export default function App() {
   const [interviewType, setInterviewType] = useState<InterviewType>('general');
   const [error, setError] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState<string>(() => localStorage.getItem('groq_api_key') || '');
   const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('groq_api_key') || '');
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    localStorage.setItem('groq_api_key', apiKey);
+    if (apiKey) {
+      localStorage.setItem('groq_api_key', apiKey);
+    }
   }, [apiKey]);
 
   useEffect(() => {
@@ -129,6 +132,50 @@ export default function App() {
     setError(null);
   };
 
+  const handleSaveApiKey = () => {
+    if (!apiKeyInput.trim()) {
+      setError('API key cannot be empty.');
+      return;
+    }
+    setError(null);
+    setApiKey(apiKeyInput.trim());
+  };
+
+  if (!apiKey) {
+    return (
+      <div className="min-h-screen bg-[#F5F5F0] text-[#141414] font-sans p-4 md:p-8 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 shadow-sm border border-[#141414]/5">
+          <h1 className="text-2xl font-serif italic mb-4 text-center">InterviewAI</h1>
+          <p className="text-sm mb-6 text-center opacity-70">
+            Enter your Groq API key to start using the real-time interview assistant.
+          </p>
+          <input
+            type="password"
+            placeholder="Enter Groq API Key"
+            value={apiKeyInput}
+            onChange={(e) => setApiKeyInput(e.target.value)}
+            className="w-full px-4 py-2 rounded-xl border border-[#141414]/20 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#141414] mb-3"
+          />
+          <p className="text-[10px] mb-4 opacity-50 text-center">
+            The key is stored only in your browser (localStorage).
+          </p>
+          <button
+            onClick={handleSaveApiKey}
+            className="w-full py-3 rounded-xl bg-[#141414] text-white text-sm font-medium hover:bg-black transition-colors"
+          >
+            Continue
+          </button>
+          {error && (
+            <div className="mt-4 text-xs text-red-600 flex items-center gap-2">
+              <AlertCircle size={14} />
+              <span>{error}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F5F0] text-[#141414] font-sans p-4 md:p-8">
       <div className="max-w-5xl mx-auto">
@@ -137,17 +184,6 @@ export default function App() {
           <div>
             <h1 className="text-4xl font-serif italic mb-2">InterviewAI</h1>
             <p className="text-sm uppercase tracking-widest opacity-50">Real-time Interview Assistant</p>
-          </div>
-          
-          <div className="w-full max-w-md mb-4">
-            <input
-              type="password"
-              placeholder="Enter Groq API Key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-[#141414]/20 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#141414]"
-            />
-            <p className="text-[10px] mt-1 opacity-50">Key is stored only in your browser (localStorage).</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
