@@ -1,4 +1,6 @@
 {
-  "framework": "vite"
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
-</create_file>
